@@ -44,8 +44,8 @@ public class MenuView {
 				controller.selectSortByPrice();
 				break;
 			case "9":
-				// 종료하기전에 최종 list의 값을 파일에 저장하자
-				// ->service 에 가서 하자
+				// 프로그램 종료시 파일저장(list를 직렬화) -> Service에 메소드 추가
+				controller.saveObject();
 
 				System.exit(0);
 			default:

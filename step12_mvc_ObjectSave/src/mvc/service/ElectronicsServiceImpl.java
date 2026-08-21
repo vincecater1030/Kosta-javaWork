@@ -1,14 +1,16 @@
 package mvc.service;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import mvc.dto.Electronics;
-import mvc.exception.DMLException;
 import mvc.exception.DuplicateModelNoEexepction;
 import mvc.exception.ElectronicsArrayBoundsException;
 import mvc.exception.SearchNotFoundException;
@@ -23,35 +25,41 @@ public class ElectronicsServiceImpl implements ElectronicsService {
 	private static final int MAX_SIZE = 6;
 	List<Electronics> list = new ArrayList<Electronics>();
 
-	/** 
-     * 외부에서 객체 생성안됨. 
-     * InitInfo.properties파일을 로딩하여  List에 추가하여
-     * 초기치 데이터를 만든다.
-     * 
-     */
-    private ElectronicsServiceImpl() {
-    	if(???.exists()) {
-    		
-    	}else {//복원한다
-    		ResourceBundle rb = ResourceBundle.getBundle("InitInfo");//dbInfo.properties
-            for(String key : rb.keySet()) {
-         	  String value =  rb.getString(key); //value는 100,선풍기,35000,삼성 선풍기
-         	  
-         	   String data[] = value.split(",");
-         	   //System.out.println(key +" = " + value); //100 = 100,선풍기,35000,삼성 선풍기
-         	  Electronics elec =  new Electronics( 
-         			  Integer.parseInt(data[0]) ,data[1],   
-      	    		 Integer.parseInt( data[2]), data[3]);
-         	  
-         	     list.add(elec );
-         	  
-            }
-    	}
-    	
-        
-        //System.out.println(list);
-      
-    }
+	/**
+	 * 외부에서 객체 생성안됨. InitInfo.properties파일을 로딩하여 List에 추가하여 초기치 데이터를 만든다.
+	 * 
+	 */
+
+	private ElectronicsServiceImpl() {
+		// 파일객체 ????????????? 생성하면서 경로입력
+		File file = new File("src/save.txt");
+		if (file.exists()) {
+			// 해당파일을 역직렬화 해서 꺼내라
+			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+
+				this.list = (List<Electronics>) ois.readObject();
+//list.add((List<Electronics>) ois.readObject());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {// 복원한다
+			ResourceBundle rb = ResourceBundle.getBundle("InitInfo");// dbInfo.properties
+			for (String key : rb.keySet()) {
+				String value = rb.getString(key); // value는 100,선풍기,35000,삼성 선풍기
+
+				String data[] = value.split(",");
+				// System.out.println(key +" = " + value); //100 = 100,선풍기,35000,삼성 선풍기
+				Electronics elec = new Electronics(Integer.parseInt(data[0]), data[1], Integer.parseInt(data[2]),
+						data[3]);
+
+				list.add(elec);
+
+			}
+		}
+
+		// System.out.println(list);
+
+	}
 
 	public static ElectronicsService getInstance() {
 		return instance;
@@ -160,8 +168,16 @@ public class ElectronicsServiceImpl implements ElectronicsService {
 	}
 
 	@Override
-	public void saveObject() {
-		// list 객체를 파일에 저장한다.
+	public void saveObject() throws Exception {
+
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/save.txt"))) {
+
+			oos.writeObject(list);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("저장완료");
 
 	}
 

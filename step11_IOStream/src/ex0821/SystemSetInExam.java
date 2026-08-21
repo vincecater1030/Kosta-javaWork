@@ -15,7 +15,7 @@ public class SystemSetInExam {
 		InputStream originalIn = System.in; // 향후 원래 대로 복원을 위한 준비
 
 		// input.txt 파일의 내용을 표준 입력처럼 읽어올 수 있다
-		System.setIn(new FileInputStream("src/ex0731/input.txt"));
+		System.setIn(new FileInputStream("src/ex0821/input.txt"));
 
 		Scanner sc = new Scanner(System.in);
 
