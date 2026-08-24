@@ -1,5 +1,6 @@
 package mvc.service;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,32 +33,41 @@ public class ElectronicsServiceImpl implements ElectronicsService {
 
 	private ElectronicsServiceImpl() {
 		// 파일객체 ????????????? 생성하면서 경로입력
-		File file = new File("src/save.txt");
-		if (file.exists()) {
-			// 해당파일을 역직렬화 해서 꺼내라
-			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+		System.out.println("user.dir = " + System.getProperty("user.dir"));
+		System.out.println("user.home = " + System.getProperty("user.home"));
 
-				this.list = (List<Electronics>) ois.readObject();
-//list.add((List<Electronics>) ois.readObject());
-			} catch (Exception e) {
-				e.printStackTrace();
+		String path = System.getProperty("user.dir") + "/save.txt";
+
+		File file = new File(path);
+
+		try {
+			if (file.exists()) {
+				System.out.println(1);
+				try (ObjectInputStream ois = new ObjectInputStream(
+						new BufferedInputStream(new FileInputStream(file)));) {
+
+					Object obj = ois.readObject();
+					if (obj instanceof List) {
+						list = (List<Electronics>) obj;
+					}
+
+				}
+			} else {
+				System.out.println(2);
+				ResourceBundle rb = ResourceBundle.getBundle("InitInfo");
+
+				for (String key : rb.keySet()) {
+					String value = rb.getString(key);
+					String[] arr = value.split(","); // 콤마를 기준으로 분리해서 배열로 리턴
+					list.add(new Electronics(Integer.parseInt(arr[0]), arr[1], Integer.parseInt(arr[2]), arr[3]));
+				}
+
 			}
-		} else {// 복원한다
-			ResourceBundle rb = ResourceBundle.getBundle("InitInfo");// dbInfo.properties
-			for (String key : rb.keySet()) {
-				String value = rb.getString(key); // value는 100,선풍기,35000,삼성 선풍기
 
-				String data[] = value.split(",");
-				// System.out.println(key +" = " + value); //100 = 100,선풍기,35000,삼성 선풍기
-				Electronics elec = new Electronics(Integer.parseInt(data[0]), data[1], Integer.parseInt(data[2]),
-						data[3]);
+		} catch (Exception e) {
+			e.printStackTrace();
 
-				list.add(elec);
-
-			}
 		}
-
-		// System.out.println(list);
 
 	}
 
