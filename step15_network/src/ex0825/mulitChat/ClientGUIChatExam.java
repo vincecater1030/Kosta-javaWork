@@ -92,13 +92,23 @@ public class ClientGUIChatExam extends JFrame {
 	public void connection() {
 		try {
 
-			sk = new Socket("192.168.0.40", 8002);
+			sk = new Socket("127.0.0.1", 8002);
 			br = new BufferedReader(new InputStreamReader(sk.getInputStream()));
 			pw = new PrintWriter(sk.getOutputStream(), true);
-
+			String name;
 			// 대화명 입력 창을 띄운다.
-			String name = JOptionPane.showInputDialog(this, "대화명을 입력하세요");
-			pw.println(name);
+			name = JOptionPane.showInputDialog(this, "대화명을 입력하세요");
+			while (true) {
+				pw.println(name);
+				String res = br.readLine();
+				if (res.equals("NO")) {
+					name = JOptionPane.showInputDialog(this, "대화명을 다시 입력하세요");
+
+				} else {
+					break;
+				}
+
+			}
 
 			setTitle("[" + name + "]");
 
