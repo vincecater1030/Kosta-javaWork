@@ -21,7 +21,6 @@ public class ServerGUIChatExam {
 
 				ClientSkThread th = new ClientSkThread();
 				th.start();
-				list.add(th);
 
 				System.out.println(sk.getInetAddress() + "님 접속하셨습니다.^^");
 				System.out.println("현재 접속 인원: " + list.size() + "명\n");
@@ -36,6 +35,16 @@ public class ServerGUIChatExam {
 		for (ClientSkThread th : list) {
 			th.pw.println(message);
 		}
+	}
+
+	public boolean duplicateNickName(String name) {
+		for (ClientSkThread th : list) {
+			if (th.nickName.equals(name)) {
+				return true;
+			}
+
+		}
+		return false;
 	}
 
 // -----------------------------------------
@@ -58,7 +67,16 @@ public class ServerGUIChatExam {
 		public void run() {
 //클라이언트가 보내온 내용을 읽어서 접속한 모든 클라이언트에 전송한다.
 			try {
-				nickName = br.readLine();// 넥네임 대기
+				while (true) {
+					nickName = br.readLine();// 넥네임 대기
+					if (duplicateNickName(nickName)) {
+						pw.println("NO");
+					} else {
+						pw.println("YES");
+						list.add(this);
+						break;
+					}
+				}
 
 				// 이름은 접속한 모든 client 전송한다.
 				sendMessage("[" + nickName + "]님이 입장하셨습니다.");
