@@ -90,7 +90,6 @@ public class EmpDAO {
 
 //모든사원의 정보 검색하기
 //select empno,ename,job,sal,hiredate from emp  - 처럼 여러개를 list 타입으로 묶어서..
-
 	public List<EmpDTO> selecetAll() {
 
 		Connection con = null;
