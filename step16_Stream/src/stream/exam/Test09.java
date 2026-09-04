@@ -16,11 +16,13 @@ public class Test09 {
                  new Student("찬범", 23, 92.3, "Computer Science"),
                  new Student("현솔", 25, 81.7, "Physics")
         );
+        boolean re = students.stream()
 
+				.allMatch((t) -> t.getScore() >= 70);
         
-       
-
-
+		System.out.println(" 모든 학생이 70점 이상 인가요?" + re);
+        
+    
 
 
 
